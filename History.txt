@@ -1,0 +1,103 @@
+2007-01-29 (0.9.5):
+	* Supports Flickr's new photo URL scheme (announced January 19, 2007):
+	  http://www.flickr.com/services/api/misc.urls.html
+	
+	  Flickr now requires API users to use the "originalsecret" and
+	  "originalformat" to retrieve the original photo--when it is
+	  accessible to the request maker (auth'ed or not) at all.
+	
+	  In order for this to work, you must supply an extra "extras"
+	  parameter, set to "original_format", when you're calling
+	  flickr.photo.search (the originalsecret will be returned back
+	  along the way), for example:
+	
+	      f.call("flickr.photo.search", ..., :extras=>"original_format")
+	
+	  For more information on flickr.photo.search, please refer to 
+	  http://www.flickr.com/services/api/flickr.photos.search.html
+	  
+	* :type key in module FlickrPhoto's helper methods is now
+	  deprecated, replaced by :format for the sake of naming consistency.
+	
+	* The change of Flickr's photo URL scheme has the implication that
+	  url_from_element_id, hash_from_element_id and element_id_from_hash
+	  will not work correctly with original photos. I'm still 
+	  considering encoding the extra originalformat and originalsecret
+	  values in the element_id scheme, but I'm reluctant since it seems
+	  that Flickr is doing its due to protect users' photos, which I
+	  think is the right thing to do.
+
+
+2007-01-08 (0.9.4):
+    * Fixed a serious defect where API parameters, such as search text, 
+      must be URL-escaped. There's a catch if you tried previously to use 
+      CGI.escape to work around, though: Flickr's API signature string must
+      not be *escaped* before the string is MD5-checksummed.
+      
+      Now everything should work fine. Pass a few CJKV or HTML entity 
+      characters to see how it goes!
+
+
+2007-01-04 (0.9.3):
+    * These methods from FlickrPhoto are deprecated:
+    
+	  * FlickrPhoto.unique_id_from_hash(params, prefix)
+	  * FlickrPhoto.url_from_unique_id(uid)
+	  * FlickrPhoto.hash_from_unique_id(uid)
+	  
+	  Instead, please call them by these new names:
+	  
+	  * FlickrPhoto.element_id_from_hash(params, prefix)
+	  * FlickrPhoto.url_from_element_id(uid)
+	  * FlickrPhoto.hash_from_element_id(uid)
+	  
+	  This is for the sake of naming consistency. "Element id" is more 
+	  web design talk. Henceforth the change.
+	  
+
+2006-12-27 (0.9.2):
+	* Added support for Flickr's new "farm" part newly found in its photo URLs
+	
+	* Your code needs no change, everything will just work, including
+	  those photo URL/div id helpers, but on the other hand...
+	  
+	* Deprecated methods in FlickrInvocation:
+
+	  * photo_url(params)
+	  * photo_div_id(params, prefix='photo')
+	  * photo_url_from_div_id(uid)
+	  * photo_info_from_div_id(uid)
+	 
+	  Those are methods that should never go into an invocation object.
+	  Instead they belong to a helper, so:
+	
+	* Created a FlickrPhoto module
+
+  	  FlickrPhoto.url_from_hash(params)
+	  FlickrPhoto.unique_id_from_hash(params, prefix)
+	  FlickrPhoto.url_from_unique_id(uid)
+	  FlickrPhoto.hash_from_unique_id(uid)
+
+	  Those helper functions now take place of their deprecated
+	  predecessors.
+	  
+    * Before :server_id and :server were both accepted hash key
+      for the "param" in those helper functions, now only :server
+      is accepted. This is in accordance with Flickr's own
+      naming convention.
+      
+    * You no longer need to set :auth=>true if you already supply
+      an :auth_token parameter when you make Flickr method calls.
+      Since :auth_token always implies that the call must be
+      authenticated, ObjectiveFlickr is happy to save a few strokes
+      for you. :)
+
+    
+2006-12-12 (0.9.1):
+	Added default_* methods into FlickrInvocation
+	Removed History.txt
+
+	
+2006-12-10 (0.9.0):
+	Initial release.
+
