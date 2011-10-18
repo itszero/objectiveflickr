@@ -35,7 +35,9 @@ class FlickrInvocation
   def initialize(api_key = nil, shared_secret = nil, options = nil)
     @api_key = api_key || @@default_api_key
     @shared_secret = shared_secret || @@default_shared_secret
-    @options = options || @@default_options    
+    @options = options || @@default_options
+    @rest_endpoint = @options[:rest_endpoint] || REST_ENDPOINT
+    @auth_endpoint = @options[:auth_endpoint] || AUTH_ENDPOINT
   end
     
   # Invoke a Flickr method, pass :auth=>true in the param hash
@@ -48,7 +50,7 @@ class FlickrInvocation
   # treated by Flickr as an authenticated call
   def call(method, params=nil)
     if params && params[:post]
-      rsp = FlickrResponse.new Net::HTTP.post_form(URI.parse(REST_ENDPOINT), post_params(method, params)).body
+      rsp = FlickrResponse.new Net::HTTP.post_form(URI.parse(@rest_endpoint), post_params(method, params)).body
     else
       url = method_url(method, params)
       rsp = FlickrResponse.new Net::HTTP.get(URI.parse(url))
@@ -71,10 +73,10 @@ class FlickrInvocation
   def login_url(permission, frob=nil)
     if frob
       sig = api_sig(:api_key => @api_key, :perms => permission.to_s, :frob=> frob)
-      url = "#{AUTH_ENDPOINT}?api_key=#{@api_key}&perms=#{permission}&frob=#{frob}&api_sig=#{sig}"
+      url = "#{@auth_endpoint}?api_key=#{@api_key}&perms=#{permission}&frob=#{frob}&api_sig=#{sig}"
     else
       sig = api_sig(:api_key => @api_key, :perms => permission.to_s)
-      url = "#{AUTH_ENDPOINT}?api_key=#{@api_key}&perms=#{permission}&api_sig=#{sig}"
+      url = "#{@auth_endpoint}?api_key=#{@api_key}&perms=#{permission}&api_sig=#{sig}"
     end
     url
   end
@@ -116,7 +118,7 @@ class FlickrInvocation
   
   private
   def method_url(method, params=nil)
-    url = "#{REST_ENDPOINT}?api_key=#{@api_key}&method=#{method}"
+    url = "#{@rest_endpoint}?api_key=#{@api_key}&method=#{method}"
     p = params || {}
     sign_params(method, p)
     
