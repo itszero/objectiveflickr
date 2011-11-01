@@ -9,11 +9,8 @@
 
 require 'rubygems'
 require 'net/http'
-require 'jcode'
 require 'digest/md5'
 require 'cgi'
-
-$KCODE = 'UTF8'
 
 # This class plays the major role of the package. Named "FlickrInvocation"
 # to allude to the making of an RPC call.

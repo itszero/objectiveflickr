@@ -9,8 +9,6 @@
 
 require 'rubygems'
 require 'json'
-require 'jcode'
-$KCODE = 'UTF8'
 
 # This class encapusulates Flickr's JSON response block. Error code
 # and error messsage are read from the response block. This class
