@@ -42,7 +42,7 @@ hoe = Hoe.new(GEM_NAME, VERS) do |p|
   p.test_globs = ["test/**/*_test.rb"]
   p.clean_globs = CLEAN  #An array of file patterns to delete on clean.
   
-  p.extra_deps = ["json"]
+  p.extra_deps = ["json", "oauth"]
   
   # == Optional
   #p.changes        - A description of the release's latest changes.
