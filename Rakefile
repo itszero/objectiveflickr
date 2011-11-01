@@ -1,17 +1,16 @@
 require 'rubygems'
+require 'rubygems/package_task'
 require 'rake'
 require 'rake/clean'
 require 'rake/testtask'
 require 'rake/packagetask'
-require 'rake/gempackagetask'
-require 'rake/rdoctask'
 require 'rake/contrib/rubyforgepublisher'
 require 'fileutils'
 require 'hoe'
 include FileUtils
 require File.join(File.dirname(__FILE__), 'lib', 'objectiveflickr', 'version')
 
-AUTHOR = "lukhnos"  # can also be an array of Authors
+AUTHOR = ["lukhnos", "itsZero"]  # can also be an array of Authors
 EMAIL = "lukhnos@gmail.com"
 DESCRIPTION = "objectiveflickr is a minimalistic Flickr API library that uses REST-style calls and receives JSON response blocks, resulting in very concise code. Named so in order to echo another Flickr library of mine, under the same name, developed for Objective-C."
 GEM_NAME = "objectiveflickr" # what ppl will type to install your gem
@@ -32,7 +31,8 @@ RDOC_OPTS = ['--quiet', '--title', "objectiveflickr documentation",
 
 # Generate all the Rake tasks
 # Run 'rake -T' to see list of generated tasks (from gem root directory)
-hoe = Hoe.new(GEM_NAME, VERS) do |p|
+hoe = Hoe.spec GEM_NAME do |p|
+  p.version = VERS
   p.author = AUTHOR 
   p.description = DESCRIPTION
   p.email = EMAIL
@@ -42,7 +42,7 @@ hoe = Hoe.new(GEM_NAME, VERS) do |p|
   p.test_globs = ["test/**/*_test.rb"]
   p.clean_globs = CLEAN  #An array of file patterns to delete on clean.
   
-  p.extra_deps = ["json", "oauth"]
+  p.extra_deps = [["json", ">= 0"], ["oauth", ">= 0"]]
   
   # == Optional
   #p.changes        - A description of the release's latest changes.
